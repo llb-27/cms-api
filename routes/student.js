@@ -24,6 +24,8 @@ router.get('/getCourse', function (req, res, fields) {
       }));
     } else {
       var sql = "select * from course";
+      console.log('[][][][][][]][]]',sql);
+      
       conn.query(sql, function (qerr, vals, fields) {
         if (qerr) {
           res.send(JSON.stringify({
@@ -98,22 +100,23 @@ router.post('/upload', upload, function (req, res, next) {
   let data = {};
   data['code'] = 200;
   let file = req.file;
-  if(file){
-    let fileNameArr = file.originalname.split('.');
-    var suffix = fileNameArr[fileNameArr.length - 1];
-    //文件重命名
-    fs.renameSync('./uploads/' + file.filename, `${fileNameArr[0]}.${suffix}`);
-    file['newfilename'] = `${fileNameArr[0]}.${suffix}`;
-  }
+  // if(file){
+  //   let fileNameArr = file.originalname.split('.');
+  //   var suffix = fileNameArr[fileNameArr.length - 1];
+  //   //文件重命名
+  //   fs.renameSync('./uploads/' + file.filename, `${fileNameArr[0]}.${suffix}`);
+  //   file['newfilename'] = `${fileNameArr[0]}.${suffix}`;
+  // }
   data['file'] = file;
   res.send(data);
 })
 
 
 router.get('/download',(req,res)=>{
-  req.query.url ? res.download(`upload/${res.query.url}`):res.send({
+  console.log('1==========',req.query.url);
+  console.log('2===============');
+  req.query.url ? res.download(`uploads/83f5c2a52ed698c3c4f6e6de134678c9`):res.send({
     success:false
   })
 });
-
 module.exports = router;

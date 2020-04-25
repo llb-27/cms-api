@@ -30,7 +30,6 @@ router.post('/announcement', function (req, res, fields) {
     console.log('sqlsqlsqlsqslq',sql);
       conn.query(sql, function (qerr, vals, fields) {
         if (qerr) {
-          console.log('===========================',qerr);
           res.send(JSON.stringify({
             code: '0x000000000',
             status: 0,
@@ -51,7 +50,6 @@ router.post('/announcement', function (req, res, fields) {
       });
     }
   });
-
 });
 
 // 获取公告
@@ -84,6 +82,86 @@ router.get('/getNotice', function (req, res, fields) {
           code: '200',
           status: 1,
           remark: '获取公告成功',
+          message: '请求成功',
+          data: vals
+        }));
+      });
+    }
+  });
+});
+
+// 获取人员信息
+router.get('/getUser',function(req,res,fields) {
+  pool.getConnection(function (err, conn) {
+    if (err) {
+      res.send(JSON.stringify({
+        code: '500',
+        status: 0,
+        remark: '服务器异常',
+        message: null,
+        data: null
+      }));
+    } else {
+      var sql = "select * from user";
+      conn.query(sql, function (qerr, vals, fields) {
+        if (qerr) {
+          res.send(JSON.stringify({
+            code: '0x000000000',
+            status: 0,
+            remark: '获取成员失败',
+            message: '请求失败',
+            data: null
+          }));
+        }
+        //释放连接
+        conn.release();
+        res.send(JSON.stringify({
+          code: '200',
+          status: 1,
+          remark: '获取成员成功',
+          message: '请求成功',
+          data: vals
+        }));
+      });
+    }
+  });
+});
+
+// 添加用户
+router.post('/addUser', function (req, res, fields) {
+  let name = req.body.name;
+  let password = req.body.password;
+  let role = req.body.role;
+  //从连接池获取连接
+  pool.getConnection(function (err, conn) {
+    if (err) {
+      res.send(JSON.stringify({
+        code: '500',
+        status: 0,
+        remark: '服务器异常',
+        message: null,
+        data: null
+      }));
+    } else {
+      // 单行插入
+    var sql = `insert into user(name,password,role) values('${name}','${password}','${role}')`;
+    console.log('sqlsqlsqlsqslq',sql);
+      conn.query(sql, function (qerr, vals, fields) {
+        if (qerr) {
+          res.send(JSON.stringify({
+            code: '0x000000000',
+            status: 0,
+            remark: '添加用户失败',
+            message: '请求失败',
+            data: null
+          }));
+        }
+        //释放连接
+        conn.release();
+        res.send(JSON.stringify({
+          code: '200',
+          status: 1,
+          remark: '添加用户成功',
           message: '请求成功',
           data: vals
         }));
